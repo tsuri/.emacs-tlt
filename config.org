@@ -1,0 +1,49 @@
+#+TITLE: Emacs Configuration
+#+DESCRIPTION: An org-babel based emacs configuration I find useful
+#+LANGUAGE: en
+#+PROPERTY: results silent
+
+* Table of Contents :TOC:
+- [[#introduction][Introduction]]
+  - [[#emacs-startup][Emacs Startup]]
+
+* Introduction
+  This is my personal Emacs configuration.  This is not the first time
+  I declare [[https://www.emacswiki.org/emacs/DotEmacsBankruptcy][Emacs bankrupcy]] and start over a new emacs life.
+
+  It is not intended to be general or beginner-friendly.  If you're a
+  beginner you'll probably be better off with one of the many emacs
+  configurations with batteries included.
+
+  Also, my Emacs stays on for weeks or months at a time; I'm not
+  interested in reducing startup time or delaying loding of packages
+  until they're first used. It simply doesn't affect me.
+** Emacs Startup
+At times I want to work with different Emacs configurations. Some
+times it in order to work on a new configuration of mine, some
+times is to test some other Emacs config frameworks like Spacemacs
+or Doom Emacs. 
+
+I keep around multiple configurations and [[https://github.com/plexus/chemacs2][chemacs2]] helps with that
+as it allow to define a default configuration while allowing
+selecting alternatives.
+
+When starting with this new configuration, I had  (in a ~$HOME/.emacs-profiles.el~ file):
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (("default" . ((user-emacs-directory . "~/.emacs.d")))
+   ("tlt" . ((user-emacs-directory . "~/.emacs-tlt"))))
+#+END_SRC
+
+#+begin_src init-emacs
+  (require 'org)
+  (let ((config-org
+	 (concat (file-name-as-directory user-emacs-directory) "config.org")))
+    (org-babel-load-file config-org))
+#+end_src
+
+Note that the org-mode file cannot be called ~init.org~ as the extracted
+emacs lisp would be saved in ~init.el~ with obvious conflict. I
+haven't found a way to specify a different destination.
+  
+
