@@ -44,6 +44,15 @@ When starting with this new configuration, I had  (in a ~$HOME/.emacs-profiles.e
 
 Note that the org-mode file cannot be called ~init.org~ as the extracted
 emacs lisp would be saved in ~init.el~ with obvious conflict. I
-haven't found a way to specify a different destination.
+haven't found a way to specify a different destination using org-babel-load-file.
+
+I can see two alternatives to be able to use `init.org`:
+- tangle init.org on save. I don't like this too much as it requires
+  to edit the file using emacs.
+- implement an alternative to org-babel-load-file that tangle into a
+  temporary buffer and then evaluate it.
+
+Both seem more work than the benefit they give.
+
   
 
