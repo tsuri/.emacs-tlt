@@ -7,11 +7,12 @@
 - [[#introduction][Introduction]]
   - [[#emacs-startup][Emacs Startup]]
 - [[#general][General]]
+  - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
 
 * Introduction
   This is my personal Emacs configuration.  This is not the first time
-  I declare [[https://www.emacswiki.org/emacs/DotEmacsBankruptcy][Emacs bankrupcy]] and start over a new emacs life.
+  I declare [[https://www.emacswiki.org/emacs/DotEmacsBankruptcy][Emacs bankrupcy]] and start over with a new emacs life.
 
   It is not intended to be general or beginner-friendly.  If you're a
   beginner you'll probably be better off with one of the many emacs
@@ -20,6 +21,7 @@
   Also, my Emacs stays on for weeks or months at a time; I'm not
   interested in reducing startup time or delaying loding of packages
   until they're first used. It simply doesn't affect me.
+  
 ** Emacs Startup
 At times I want to work with different Emacs configurations. Some
 times it in order to work on a new configuration of mine, some
@@ -30,14 +32,20 @@ I keep around multiple configurations and [[https://github.com/plexus/chemacs2][
 as it allow to define a default configuration while allowing
 selecting alternatives.
 
-When starting with this new configuration, I had  (in a ~$HOME/.emacs-profiles.el~ file):
+When starting with this new configuration, I placed the following in
+~$HOME/.emacs-profiles.el~:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-  (("default" . ((user-emacs-directory . "~/.emacs.d")))
+  (("default" . ((user-emacs-directory . "~/.emacs-default.d")))
    ("tlt" . ((user-emacs-directory . "~/.emacs-tlt"))))
 #+END_SRC
 
-#+begin_src init-emacs
+I also removed ~~/.emacs~ (these days the only reason for having a
+.emacs file is if you where using ~chemacs~, the original version).
+
+Last, the following goes in ~~/.emacs-tlt/init.el~:
+
+#+begin_src emacs-lisp :tangle no
   (require 'org)
   (let ((config-org
 	 (concat (file-name-as-directory user-emacs-directory) "config.org")))
@@ -54,19 +62,14 @@ I can see two alternatives to be able to use `init.org`:
 - implement an alternative to org-babel-load-file that tangle into a
   temporary buffer and then evaluate it.
 
-Both seem more work than the benefit they give.
+Both seem more work than the benefit they give and ~config.org~ will be.
+
+By the way, ~tlt~ is because this is *T* he  *L* ast  *T* ime I start from
+scratch.
 
 * General
-** Save Areas
-Emacs (and emacs packages) tend to store lot of files in the .emacs.d directory. This wouldn't be
-particularly problematic if it wasn't for the fact that my .emacs-*.d is also a git repository. It is
-possible to ignore files in git, but it become annoying to have to modify .gitignore just because I
-tried a new package. So we will move everything to a ~.save~ directory.
 
-Most of this will be accomplished by the no-litter package, but we initialize here a few variables
-so that the same places can be used by other packages no-litter knows nothing about.
-
-*** Package management - Act I
+** Package management - Act I
 Here we set up the bare minimum for installing a few packages we need
 before ~use-package~ is available.
 
@@ -80,6 +83,14 @@ before ~use-package~ is available.
   (package-refresh-contents)
 #+end_src
 
+** Save Areas
+Emacs (and emacs packages) tend to store lot of files in the .emacs.d directory. This wouldn't be
+particularly problematic if it wasn't for the fact that my .emacs-*.d is also a git repository. It is
+possible to ignore files in git, but it become annoying to have to modify .gitignore just because I
+tried a new package. So we will move everything to a ~.save~ directory.
+
+Most of this will be accomplished by the ~no-litter~ package, but we initialize here a few variables
+so that the same places can be used by other packages no-litter knows nothing about.
 
 #+BEGIN_SRC emacs-lisp
   (require 'subr-x) ; for string-remove-suffix
@@ -103,8 +114,3 @@ implemented any form of garbage collection.
   (setq package-user-dir (mav/litter-directory "packages" emacs-version))
   (package-install 'no-littering)
 #+END_SRC
-
-
-
-
-
