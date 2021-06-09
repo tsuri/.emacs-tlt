@@ -6,6 +6,8 @@
 * Table of Contents :TOC:
 - [[#introduction][Introduction]]
   - [[#emacs-startup][Emacs Startup]]
+- [[#general][General]]
+  - [[#save-areas][Save Areas]]
 
 * Introduction
   This is my personal Emacs configuration.  This is not the first time
@@ -54,5 +56,55 @@ I can see two alternatives to be able to use `init.org`:
 
 Both seem more work than the benefit they give.
 
-  
+* General
+** Save Areas
+Emacs (and emacs packages) tend to store lot of files in the .emacs.d directory. This wouldn't be
+particularly problematic if it wasn't for the fact that my .emacs-*.d is also a git repository. It is
+possible to ignore files in git, but it become annoying to have to modify .gitignore just because I
+tried a new package. So we will move everything to a ~.save~ directory.
+
+Most of this will be accomplished by the no-litter package, but we initialize here a few variables
+so that the same places can be used by other packages no-litter knows nothing about.
+
+*** Package management - Act I
+Here we set up the bare minimum for installing a few packages we need
+before ~use-package~ is available.
+
+#+begin_src emacs-lisp
+  (setq package-archives
+         '(("gnu" . "https://elpa.gnu.org/packages/")
+           ("melpa-stable" . "https://stable.melpa.org/packages/")
+           ("melpa" . "https://melpa.org/packages/")
+           ("org" . "https://orgmode.org/elpa/")))
+  (require 'package)
+  (package-refresh-contents)
+#+end_src
+
+
+#+BEGIN_SRC emacs-lisp
+  (require 'subr-x) ; for string-remove-suffix
+  (defun mav/litter-directory (leaf-dir &optional version)
+    (let* ((dir (directory-file-name
+                 (file-name-directory user-emacs-directory)))
+           (distribution (string-remove-suffix ".d" dir))
+           (version-dir (if version version "")))
+      (file-name-as-directory (format "%s-save.d/%s/%s" distribution leaf-dir version-dir))))
+#+END_SRC
+
+Another problem is that bytecompiled files are at times incompatibel
+across different versions of emacs. I solve this by keeping versioned
+directories, one for each emacs version I use. For now I haven't
+implemented any form of garbage collection.
+
+#+BEGIN_SRC emacs-lisp
+  (setq no-littering-etc-directory (mav/litter-directory "config"))
+  (setq no-littering-var-directory (mav/litter-directory "data"))
+  (setq custom-file (expand-file-name "custom.el" no-littering-var-directory))
+  (setq package-user-dir (mav/litter-directory "packages" emacs-version))
+  (package-install 'no-littering)
+#+END_SRC
+
+
+
+
 
