@@ -73,14 +73,35 @@ scratch.
 Here we set up the bare minimum for installing a few packages we need
 before ~use-package~ is available.
 
+#+BEGIN_SRC emacs-lisp
+  (require 'subr-x) ; for string-remove-suffix
+  (defun mav/litter-directory (leaf-dir &optional version)
+    (let* ((dir (directory-file-name
+                 (file-name-directory user-emacs-directory)))
+           (distribution (string-remove-suffix ".d" dir))
+           (version-dir (if version version "")))
+      (file-name-as-directory (format "%s-save.d/%s/%s" distribution leaf-dir version-dir))))
+#+END_SRC
+
+Bytecompiled files are at times incompatible across different versions
+of emacs. I solve this by keeping versioned directories, one for each
+emacs version I use. For now I haven't implemented any form of garbage
+collection.
+
 #+begin_src emacs-lisp
+  (setq package-user-dir (mav/litter-directory "packages" emacs-version))
   (setq package-archives
-         '(("gnu" . "https://elpa.gnu.org/packages/")
-           ("melpa-stable" . "https://stable.melpa.org/packages/")
-           ("melpa" . "https://melpa.org/packages/")
-           ("org" . "https://orgmode.org/elpa/")))
+        '(("gnu" . "https://elpa.gnu.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("org" . "https://orgmode.org/elpa/")))
   (require 'package)
+  (package-initialize)
   (package-refresh-contents)
+#+end_src
+
+#+begin_src emacs-lisp
+
 #+end_src
 
 ** Save Areas
@@ -92,25 +113,13 @@ tried a new package. So we will move everything to a ~.save~ directory.
 Most of this will be accomplished by the ~no-litter~ package, but we initialize here a few variables
 so that the same places can be used by other packages no-litter knows nothing about.
 
-#+BEGIN_SRC emacs-lisp
-  (require 'subr-x) ; for string-remove-suffix
-  (defun mav/litter-directory (leaf-dir &optional version)
-    (let* ((dir (directory-file-name
-                 (file-name-directory user-emacs-directory)))
-           (distribution (string-remove-suffix ".d" dir))
-           (version-dir (if version version "")))
-      (file-name-as-directory (format "%s-save.d/%s/%s" distribution leaf-dir version-dir))))
-#+END_SRC
-
-Another problem is that bytecompiled files are at times incompatibel
-across different versions of emacs. I solve this by keeping versioned
-directories, one for each emacs version I use. For now I haven't
-implemented any form of garbage collection.
 
 #+BEGIN_SRC emacs-lisp
-  (setq no-littering-etc-directory (mav/litter-directory "config"))
-  (setq no-littering-var-directory (mav/litter-directory "data"))
+  (setq no-littering-etc-directory (expand-file-name "~/.emacs-save.d/config"))
+  (setq no-littering-var-directory (expand-file-name "~/.emacs-save.d/data"))
   (setq custom-file (expand-file-name "custom.el" no-littering-var-directory))
-  (setq package-user-dir (mav/litter-directory "packages" emacs-version))
   (package-install 'no-littering)
+  (require 'no-littering)
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 #+END_SRC
