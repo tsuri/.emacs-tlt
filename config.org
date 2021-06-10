@@ -95,6 +95,12 @@ collection.
           ("melpa-stable" . "https://stable.melpa.org/packages/")
           ("melpa" . "https://melpa.org/packages/")
           ("org" . "https://orgmode.org/elpa/")))
+  (setq package-archive-priorities
+        '(("org" . 50)
+          ("melpa-stable" . 40)
+          ("gnu" . 30)
+          ("melpa" . 10)))
+  (setq package-menu-hide-low-priority t)
   (require 'package)
   (package-initialize)
   (package-refresh-contents)
