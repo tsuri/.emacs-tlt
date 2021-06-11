@@ -131,6 +131,7 @@ so that the same places can be used by other packages no-litter knows nothing ab
   (require 'no-littering)
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (desktop-save-mode 1)
 #+END_SRC
 
 * Emacs debugging
