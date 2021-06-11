@@ -9,6 +9,7 @@
 - [[#general][General]]
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
+- [[#emacs-debugging][Emacs debugging]]
 
 * Introduction
   This is my personal Emacs configuration.  This is not the first time
@@ -130,4 +131,39 @@ so that the same places can be used by other packages no-litter knows nothing ab
   (require 'no-littering)
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+#+END_SRC
+
+* Emacs debugging
+When testing changes to the emacs configuration it is very useful to
+be able to restart emacs from within Emacs. The following allows to
+restart emacs when C-x C-c (normally bound to save-buffers-kill-emacs)
+is invoked with a universal argument.
+
+Note that when we restart emacs, all open files and frames are
+restored (curtesy of the desktop package).  We also retrieve the
+initial command line arguments. ~restart-emacs~ doesn't do this as
+there's no platform independent way for doing it. Note that
+~command-line-args~ is not sufficient as many arguments are deleted
+while being processed by the emacs C code (for instance ~--debug-init~ )
+I'd still think that it would be better than completely ignoring them,
+but I'm not the auhor of the ~~restart-emacs~ package.  Here I collect
+arguments from the ~/proc~ file system, I only care about linux anyhow.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mav/emacs-args ()
+    (with-temp-buffer
+      (insert-file-contents "/proc/self/cmdline")
+      (split-string (buffer-string) "\0" t)))
+
+  (defun mav/restart-emacs-or-exit (arg)
+    (interactive "P")
+    (if arg
+        (restart-emacs (cdr (mav/emacs-args)))
+      (save-buffers-kill-emacs)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package restart-emacs
+    :bind
+    ("C-x C-c" . mav/restart-emacs-or-exit))
 #+END_SRC
