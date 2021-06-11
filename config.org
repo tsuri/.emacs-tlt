@@ -168,3 +168,8 @@ arguments from the ~/proc~ file system, I only care about linux anyhow.
     :bind
     ("C-x C-c" . mav/restart-emacs-or-exit))
 #+END_SRC
+
+#+begin_src emacs-lisp
+  (use-package macrostep
+  :bind (:map  emacs-lisp-mode-map (("C-c e" . macrostep-expand))))
+#+end_src
