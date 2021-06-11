@@ -169,7 +169,25 @@ arguments from the ~/proc~ file system, I only care about linux anyhow.
     ("C-x C-c" . mav/restart-emacs-or-exit))
 #+END_SRC
 
+In elisp mode, expanding macros is often an important complement to documentation.
 #+begin_src emacs-lisp
   (use-package macrostep
   :bind (:map  emacs-lisp-mode-map (("C-c e" . macrostep-expand))))
+#+end_src
+
+Paredit is very useful for editing lisp code. If you do it often
+enough to remember the relative keybinding.
+#+begin_src emacs-lisp
+(use-package paredit
+  :init
+  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook #'enable-paredit-mode)
+  :config
+  (show-paren-mode t)
+  :bind (("M-[" . paredit-wrap-square)
+         ("M-{" . paredit-wrap-curly))
+  :diminish nil)
 #+end_src
