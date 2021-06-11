@@ -107,7 +107,9 @@ collection.
 #+end_src
 
 #+begin_src emacs-lisp
-
+  (package-install 'use-package)
+  (require 'use-package)
+  (setq use-package-always-ensure t)
 #+end_src
 
 ** Save Areas
