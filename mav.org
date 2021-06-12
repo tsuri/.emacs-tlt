@@ -48,9 +48,9 @@ Last, the following goes in ~~/.emacs-tlt/init.el~:
 
 #+begin_src emacs-lisp :tangle no
   (require 'org)
-  (let ((config-org
-	 (concat (file-name-as-directory user-emacs-directory) "config.org")))
-    (org-babel-load-file config-org))
+  (let ((mav-org
+	 (concat (file-name-as-directory user-emacs-directory) "mav.org")))
+    (org-babel-load-file mav-org))
 #+end_src
 
 Note that the org-mode file cannot be called ~init.org~ as the extracted
