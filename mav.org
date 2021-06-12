@@ -9,6 +9,7 @@
 - [[#general][General]]
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
+- [[#global-keybinding][Global Keybinding]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#unclassified-packages][Unclassified Packages]]
 - [[#future-work][Future Work]]
@@ -115,6 +116,11 @@ collection.
   (setq use-package-always-ensure t)
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package use-package-chords
+    :ensure t
+    :config (key-chord-mode 1))
+#+end_src
 ** Save Areas
 Emacs (and emacs packages) tend to store lot of files in the .emacs.d directory. This wouldn't be
 particularly problematic if it wasn't for the fact that my .emacs-*.d is also a git repository. It is
@@ -134,6 +140,16 @@ so that the same places can be used by other packages no-litter knows nothing ab
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (desktop-save-mode 1)
+#+END_SRC
+
+* Global Keybinding
+
+#+BEGIN_SRC emacs-lisp
+  (use-package key-chord
+    :config
+    (key-chord-define-global ".."     'comment-region)
+    (key-chord-define-global ",,"     'sort-lines)
+    (key-chord-define-global "//"     'align-regexp))
 #+END_SRC
 
 * Emacs debugging
