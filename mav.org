@@ -10,6 +10,7 @@
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
 - [[#global-keybinding][Global Keybinding]]
+- [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#unclassified-packages][Unclassified Packages]]
 - [[#future-work][Future Work]]
@@ -116,11 +117,14 @@ collection.
   (setq use-package-always-ensure t)
 #+end_src
 
+In theory, this package is deprecated and the functionality built-in
+into ~use-package~. In practice, without it I cannot get the ~:chords~
+keyword to work.
 #+begin_src emacs-lisp
   (use-package use-package-chords
-    :ensure t
     :config (key-chord-mode 1))
 #+end_src
+
 ** Save Areas
 Emacs (and emacs packages) tend to store lot of files in the .emacs.d directory. This wouldn't be
 particularly problematic if it wasn't for the fact that my .emacs-*.d is also a git repository. It is
@@ -151,6 +155,23 @@ so that the same places can be used by other packages no-litter knows nothing ab
     (key-chord-define-global ",,"     'sort-lines)
     (key-chord-define-global "//"     'align-regexp))
 #+END_SRC
+
+* Movement
+
+When more than two windows are displayed and you press ~C-x o~  (normally bound to ~other-window~)
+~~ace-window~ overlays a number in each window so that you can quickly
+navigate to the desired target window. And then we give ourselves a
+chord, so that ~''~ can be used to switch window.
+
+#+begin_src emacs-lisp 
+      (use-package ace-window
+        :bind
+        ("C-x o" . ace-window)
+        :chords
+        (("''" . ace-window))
+        :custom-face
+        (aw-leading-char-face ((t (:inherit ace-jump-face-foreground :font "FasterOne" :height 2.5 :foreground "dark gray" )))))
+#+end_src
 
 * Emacs debugging
 When testing changes to the emacs configuration it is very useful to
