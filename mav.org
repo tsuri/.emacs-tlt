@@ -9,6 +9,7 @@
 - [[#general][General]]
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
+  - [[#secrets][Secrets]]
 - [[#global-keybinding][Global Keybinding]]
 - [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
@@ -151,7 +152,7 @@ ELPA and thus ~paradox-hide-wiki-packages~ might not be useful.
    paradox-column-width-package 27
    paradox-column-width-version 13
    paradox-execute-asynchronously t
-;   paradox-github-token (cadr (auth-source-user-and-password "api.github.com" "polymath-solutions^paradox"))
+   paradox-github-token (cadr (auth-source-user-and-password "api.github.com" "tsuri^paradox"))
    paradox-hide-wiki-packages t)
   (remove-hook 'paradox-after-execute-functions #'paradox--report-buffer-print)
   (paradox-enable))
@@ -192,6 +193,22 @@ so that the same places can be used by other packages no-litter knows nothing ab
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (desktop-save-mode 1)
+#+END_SRC
+
+** Secrets
+
+#+begin_src emacs-lisp
+  (use-package auth-source
+    :ensure nil
+    :custom
+    (auth-sources '((:source "~/.authinfo.gpg"))))
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+  (use-package epa-file
+    :ensure nil
+    :config
+    (epa-file-enable))
 #+END_SRC
 
 * Global Keybinding
@@ -293,3 +310,6 @@ look deeper in what these packages offer.
   high-level code. These days, I'd want multiple tabs for different
   compilers/optimization. Also, needs to use the compilation command
   database of clang.
+
+  Fonts:
+  - https://overpassfont.org/
