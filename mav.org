@@ -5,6 +5,7 @@
 
 * Table of Contents :TOC:
 - [[#introduction][Introduction]]
+  - [[#system-config][System Config]]
   - [[#emacs-startup][Emacs Startup]]
 - [[#general][General]]
   - [[#package-management---act-i][Package management - Act I]]
@@ -30,7 +31,60 @@
   Also, my Emacs stays on for weeks or months at a time; I'm not
   interested in reducing startup time or delaying loding of packages
   until they're first used. It simply doesn't affect me.
-  
+
+** System Config
+
+*** Fonts
+The following fragment will be used by ~scripts/install-fonts~. Don't run
+it blindly, as is it takes a lot of disk space (the google fonts
+alone, are 650MB when zipped and 1.5GB uncompressed; nobody really
+needs all of them). Unfortunately, I don't know of a scriptable way
+for downloading  individual families.
+
+Fragments labeled ~sh-install-fonts~ are executed in a temp directory,
+no need to cleanup.
+
+#+begin_src sh-install-fonts
+echo "Installing fonts"
+
+#echo "Google Web Fonts (650MB/1.5GB)"
+#wget https://github.com/google/fonts/archive/main.zip -q
+
+#Roboto
+#Roboto Condensed
+#Roboto Mono
+#Inconsolata
+#Source Sans Pro
+#Cabin (or Cabin Sketch)
+#Architects Daughter
+#FasterOne
+#GochiHand
+# YanoneKaffeesatz
+
+if [[ ! -f ${HOME}/.fonts/MaterialIcons-Regular.ttf ]]; then
+echo "Material Icons (309MB/2.1GB)"
+wget https://github.com/google/material-design-icons/archive/refs/tags/4.0.0.zip -q
+unzip 4.0.0.zip
+cp material-design-icons-4.0.0/font/MaterialIcons-Regular.ttf ${HOME}/.fonts
+cp material-design-icons-4.0.0/font/MaterialIconsOutlined-Regular.otf ${HOME}/.fonts
+cp material-design-icons-4.0.0/font/MaterialIconsRound-Regular.otf ${HOME}/.fonts
+cp material-design-icons-4.0.0/font/MaterialIconsSharp-Regular.otf ${HOME}/.fonts
+cp material-design-icons-4.0.0/font/MaterialIconsTwoTone-Regular.otf ${HOME}/.fonts
+rm -rf material-design-icons-4.0.0
+else
+echo "Skipping Material Icons"
+fi
+
+echo "JetBrainsMono"
+wget https://download.jetbrains.com/fonts/JetBrainsMono-2.225.zip -q
+unzip JetBrainsMono-2.225.zip
+cp fonts/ttf/*.ttf ${HOME}/.fonts/
+cp fonts/variable/*ttf ${HOME}/.fonts
+rm -rf fonts
+
+fc-cache
+#+end_src
+
 ** Emacs Startup
 At times I want to work with different Emacs configurations. Some
 times it in order to work on a new configuration of mine, some
