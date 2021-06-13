@@ -12,6 +12,8 @@
   - [[#save-areas][Save Areas]]
   - [[#secrets][Secrets]]
 - [[#global-keybinding][Global Keybinding]]
+- [[#appearance][Appearance]]
+  - [[#themes][Themes]]
 - [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#software-development][Software Development]]
@@ -278,6 +280,65 @@ so that the same places can be used by other packages no-litter knows nothing ab
     (key-chord-define-global "//"     'align-regexp))
 #+END_SRC
 
+* Appearance
+** Themes
+*** Fonts
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :font "JetBrainsMono 12")
+#+end_src
+
+*** Theme Management
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cycle-themes
+    :bind
+    ("C-c t" . cycle-themes)
+    :config
+    (cycle-themes-mode)
+    (setq cycle-themes-theme-list
+          '(doom-challenger-deep doom-city-lights doom-dracula doom-molokai doom-nord-light doom-nord doom-nova doom-one-light doom-one doom-opera-light doom-opera doom-peacock doom-solarized-light doom-spacegrey doom-tomorrow-day doom-tomorrow-night doom-vibrant adwaita deeper-blue dichromacy leuven light-blue manoj-dark misterioso tango-dark tango tsdh-dark tsdh-light wheatgrass whiteboard wombat)))
+#+END_SRC
+
+Select themes, disabling previous ones. The following function is the
+entrety of the package ~select-themes~, the only change being that we
+pass ~t~ to avoid being asked about safety. A better approach is
+probably ~custom-safe-themes~.
+
+#+BEGIN_SRC emacs-lisp
+  ; (use-package select-themes)
+  (defun select-themes (theme)
+    "Interactively select a THEME, from the available custom themes.
+
+  You can also select '*Emacs default*' to return to Emacs default theme.
+
+  Note: multiple enabled themes cause Emacs to slow down, so we
+  disable them before selecting the new theme."
+    (interactive (list (completing-read "Select theme: "
+                                  (sort (custom-available-themes) 'string<)
+                                  nil nil nil nil
+                                  "*Emacs default*")))
+    (mapc 'disable-theme custom-enabled-themes)
+    (unless (string= "*Emacs default*" theme)
+      (load-theme (intern-soft theme) t)))
+#+END_SRC
+
+*** Themes
+
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes)
+
+; here select-themes as-is is not nice as it would ask permission (e.g. no way to trust lisp code
+; with the ~t~ argument. TODO write our own version.
+  ;  (load-theme 'doom-one-light t)
+;    (load-theme 'doom-one t)
+  ;(load-theme 'doom-vibrant)
+;  (load-theme 'doom-acario-light t)
+  ;(load-theme 'doom-acario-dark)
+  ;(load-theme 'doom-tomorrow-day)
+  ;(load-theme 'ample-light t)
+
+#+END_SRC
+
 * Movement
 
 When more than two windows are displayed and you press ~C-x o~  (normally bound to ~other-window~)
@@ -389,7 +450,7 @@ the main part of this configuration file.
 I just need something dark to visually distinguish the Emacs I'm using
 for editing and the Emacs that I use for testing this
 configuration. Soon we'll be "self-hosting" :-) 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package solaire-mode
     :config
     (add-to-list 'solaire-mode-themes-to-face-swap '"vscode-dark-plus")
