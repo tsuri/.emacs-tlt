@@ -318,11 +318,11 @@ Navigation between versions is useful, we'll need a good keybinding
 for it.
 
 #+begin_src emacs-lisp
-(use-package git-timemachine :config (global-git-gutter+-mode))
+(use-package git-timemachine)
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package git-gutter+)
+  (use-package git-gutter+ :config (global-git-gutter+-mode))
 
   (use-package git-gutter-fringe+ :after git-gutter+)
 #+end_src
