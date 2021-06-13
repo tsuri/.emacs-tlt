@@ -13,6 +13,8 @@
 - [[#global-keybinding][Global Keybinding]]
 - [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
+- [[#software-development][Software Development]]
+  - [[#version-control][Version Control]]
 - [[#unclassified-packages][Unclassified Packages]]
   - [[#temporary-theme][Temporary theme]]
 - [[#future-work][Future Work]]
@@ -295,6 +297,34 @@ enough to remember the relative keybinding.
   :bind (("M-[" . paredit-wrap-square)
          ("M-{" . paredit-wrap-curly))
   :diminish nil)
+#+end_src
+* Software Development
+** Version Control
+
+I use magit for interacting with git repositories. And I'm forcing
+myself to use the command line git as little as possible.
+#+begin_src emacs-lisp
+  (use-package magit
+     :config (setq magit-save-repository-buffers 'dontask))
+#+end_src
+
+Forge allows to interact with github (and similar deployments, gitlab
+(soon) gitea etc). This for actions like pull requests and issues.
+#+begin_src emacs-lisp
+(use-package forge :after magit)
+#+end_src
+
+Navigation between versions is useful, we'll need a good keybinding
+for it.
+
+#+begin_src emacs-lisp
+(use-package git-timemachine :config (global-git-gutter+-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package git-gutter+)
+
+  (use-package git-gutter-fringe+ :after git-gutter+)
 #+end_src
 * Unclassified Packages
 Here we have packages that I have installed and I'm probably playing
