@@ -14,6 +14,7 @@
 - [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#unclassified-packages][Unclassified Packages]]
+  - [[#temporary-theme][Temporary theme]]
 - [[#future-work][Future Work]]
 
 * Introduction
@@ -300,6 +301,23 @@ Here we have packages that I have installed and I'm probably playing
 with. They need to be moved over time to the appropriate section in
 the main part of this configuration file.
 
+** Temporary theme
+I just need something dark to visually distinguish the Emacs I'm using
+for editing and the Emacs that I use for testing this
+configuration. Soon we'll be "self-hosting" :-) 
+#+BEGIN_SRC emacs-lisp
+  (use-package solaire-mode
+    :config
+    (add-to-list 'solaire-mode-themes-to-face-swap '"vscode-dark-plus")
+    (setq solaire-mode-auto-swap-bg nil)
+    (solaire-global-mode +1))
+
+  (use-package vscode-dark-plus-theme
+    :after solaire-mode
+    :config
+    (load-theme 'vscode-dark-plus t))
+#+END_SRC
+
 * Future Work
 This section list things that captured my interest. The plan is to
 look deeper in what these packages offer.
@@ -313,3 +331,14 @@ look deeper in what these packages offer.
 
   Fonts:
   - https://overpassfont.org/
+
+Download and install all Google fonts from
+https://github.com/google/fonts/archive/master.zip. Extract and
+install all ~.ttf~ in your ~$HOME/.fonts~ directory.
+
+Download jetbrains from https://www.jetbrains.com/lp/mono/
+
+(set-face-attribute 'default nil :font "JetBrainsMono 10")
+
+Download
+https://downloads.sourceforge.net/project/dejavu/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fdejavu%2Ffiles%2Fdejavu%2F2.37%2Fdejavu-fonts-ttf-2.37.tar.bz2%2Fdownload&ts=1613947291
