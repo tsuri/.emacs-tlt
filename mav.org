@@ -93,6 +93,21 @@ of emacs. I solve this by keeping versioned directories, one for each
 emacs version I use. For now I haven't implemented any form of garbage
 collection.
 
+We have a conundrum here: if we don't call ~package-initialize~ here we
+cannot install ~use-package~. But if we do call it here we have trouble
+when loading ~auto-package-update~ as the first thing that package does
+is a ~(require 'package)~ followed by a ~(package-initialize)~, both
+unconditionally. It wouldn't be a problem if Emacs then didn' issue a
+warning =Warning (package): Unnecessary call to ‘package-initialize’ in
+init file=. Even the warning wouldn't be a problem, if documentation
+didn't say that double calls are reserved for "advanced" cases,
+without saying what those would be or providing an example.
+I've found in the interubes a number of suggestions to be placed in
+=early-init.el=, but none of them worked for me. So, for now I simply
+disable warnings of this nature when loading
+~auto-package-update~. Unfortunately everything after it has those
+warning disabled (maybe I should explicitely re-enable them)
+
 #+begin_src emacs-lisp
   (setq package-user-dir (mav/litter-directory "packages" emacs-version))
   (setq package-archives
@@ -123,6 +138,39 @@ keyword to work.
 #+begin_src emacs-lisp
   (use-package use-package-chords
     :config (key-chord-mode 1))
+#+end_src
+
+~paradox~ is a nicer UI for the regular list-packages.
+Note: as far as I know, all emacswiki packages have been reoved from
+ELPA and thus ~paradox-hide-wiki-packages~ might not be useful.
+
+#+BEGIN_SRC emacs-lisp
+(use-package paradox
+  :config
+  (setq-default
+   paradox-column-width-package 27
+   paradox-column-width-version 13
+   paradox-execute-asynchronously t
+;   paradox-github-token (cadr (auth-source-user-and-password "api.github.com" "polymath-solutions^paradox"))
+   paradox-hide-wiki-packages t)
+  (remove-hook 'paradox-after-execute-functions #'paradox--report-buffer-print)
+  (paradox-enable))
+#+END_SRC
+
+I don't remember to upgrade packages ever. Fully automatic is a bit
+too dangerous and I would not look into new features, so I make emacs
+ask me before updating packages.
+TODO(mav) make the installed packages into a local git repository and
+use ~auto-package-update-before-hook~ for committing (or maybe is better
+to commit after an upgrade)
+
+#+begin_src emacs-lisp
+  (use-package auto-package-update
+    :init (setq warning-suppress-log-types '((package reinitialization)))
+    :config
+     (setq auto-package-update-delete-old-versions t
+           auto-package-update-interval 10
+           auto-package-update-prompt-before-update t))
 #+end_src
 
 ** Save Areas
