@@ -14,6 +14,7 @@
 - [[#global-keybinding][Global Keybinding]]
 - [[#appearance][Appearance]]
   - [[#themes][Themes]]
+  - [[#modeline][Modeline]]
 - [[#movement][Movement]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#software-development][Software Development]]
@@ -260,7 +261,8 @@ so that the same places can be used by other packages no-litter knows nothing ab
   (use-package auth-source
     :ensure nil
     :custom
-    (auth-sources '((:source "~/.authinfo.gpg"))))
+    (auth-sources '((:source "~/.authinfo.gpg")))
+    (auth-source-cache-expiry (* 24 60 60)))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
@@ -337,6 +339,13 @@ probably ~custom-safe-themes~.
   ;(load-theme 'doom-tomorrow-day)
   ;(load-theme 'ample-light t)
 
+#+END_SRC
+** Modeline
+
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
 #+END_SRC
 
 * Movement
