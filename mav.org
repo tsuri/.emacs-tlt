@@ -13,7 +13,9 @@
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
   - [[#secrets][Secrets]]
-- [[#global-keybinding][Global Keybinding]]
+- [[#keybindings][Keybindings]]
+  - [[#memory-aids][Memory Aids]]
+  - [[#global-keybindings][Global Keybindings]]
 - [[#appearance][Appearance]]
   - [[#themes][Themes]]
   - [[#modeline][Modeline]]
@@ -339,7 +341,29 @@ so that the same places can be used by other packages no-litter knows nothing ab
     (epa-file-enable))
 #+END_SRC
 
-* Global Keybinding
+* Keybindings
+
+** Memory Aids
+There are a few keybindings in Emacs. Some are useful, and you won't
+remember them when needed.
+
+At times one remembers the beginning of a keybinding. ~which-key~ comes
+to the rescue and after a short delay shows all possible ways to
+extend that prefix. Not as precise as curated hydras, but has the big
+advantage of applying to all key bindings without further
+cofiguration.
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+#+END_SRC
+
+And remember the ~describe-personal-keybindings~ that comes with ~use-package~.
+
+** Global Keybindings
 
 #+BEGIN_SRC emacs-lisp
   (use-package key-chord
