@@ -257,6 +257,15 @@ keyword to work.
     :config (key-chord-mode 1))
 #+end_src
 
+The modeline becomes unwieldy when lot of minor modes try to say
+things there. We were using ~diminish~, but it seems that now
+~delight~ can completely replace it.
+
+#+BEGIN_SRC emacs-lisp
+(use-package delight)
+#+END_SRC
+
+
 ~paradox~ is a nicer UI for the regular list-packages.
 Note: as far as I know, all emacswiki packages have been reoved from
 ELPA and thus ~paradox-hide-wiki-packages~ might not be useful.
