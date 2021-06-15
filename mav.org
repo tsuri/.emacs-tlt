@@ -385,6 +385,15 @@ And remember the ~describe-personal-keybindings~ that comes with ~use-package~.
 (set-face-attribute 'default nil :font "JetBrainsMono 12")
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package emojify
+    :config (if (display-graphic-p)
+                 (setq emojify-display-style 'image)
+               (setq emojify-display-style 'unicode)
+               )
+               (setq emojify-emoji-set "emojione-v2.2.6")
+    :init (global-emojify-mode 1))
+#+end_src
 *** Theme Management
 
 #+BEGIN_SRC emacs-lisp
