@@ -18,6 +18,7 @@
   - [[#themes][Themes]]
   - [[#modeline][Modeline]]
 - [[#movement][Movement]]
+- [[#undo][Undo]]
 - [[#emacs-debugging][Emacs debugging]]
 - [[#software-development][Software Development]]
   - [[#version-control][Version Control]]
@@ -25,6 +26,7 @@
   - [[#temporary-theme][Temporary theme]]
 - [[#future-work][Future Work]]
   - [[#other-peoples-initel-files][Other People's .init.el files]]
+  - [[#sites][Sites]]
 
 * Introduction
   This is my personal Emacs configuration.  This is not the first time
@@ -422,6 +424,19 @@ chord, so that ~''~ can be used to switch window.
         (aw-leading-char-face ((t (:inherit ace-jump-face-foreground :font "FasterOne" :height 2.5 :foreground "dark gray" )))))
 #+end_src
 
+* Undo
+
+Friends don't let friends use Emacs' builtin undo.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :delight undo-tree-mode
+    :chords (("uu" . undo-tree-visualize))
+    :init (global-undo-tree-mode)
+    (setq undo-tree-visualizer-diff t)
+    (setq undo-tree-visualizer-timestamps t))
+#+END_SRC
+
 * Emacs debugging
 When testing changes to the emacs configuration it is very useful to
 be able to restart emacs from within Emacs. The following allows to
@@ -563,3 +578,11 @@ Download jetbrains from https://www.jetbrains.com/lp/mono/
 
 Download
 https://downloads.sourceforge.net/project/dejavu/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fdejavu%2Ffiles%2Fdejavu%2F2.37%2Fdejavu-fonts-ttf-2.37.tar.bz2%2Fdownload&ts=1613947291
+
+** Sites
+
+https://peach-melpa.org/ gallery of themes
+https://emacsthemes.com/popular/index.html theme popularity
+
+https://github.com/larkery/emacs/blob/master/site-lisp/theme-to-xresources.el
+https://github.com/jcaw/theme-magic
