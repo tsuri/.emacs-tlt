@@ -195,6 +195,10 @@ when I'll use wide or ultrawide screens.
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 
+A bit more space in the fringe:
+#+begin_src emacs-lisp
+(set-fringe-mode 10)
+#+end_src
 ** Package management - Act I
 Here we set up the bare minimum for installing a few packages we need
 before ~use-package~ is available.
