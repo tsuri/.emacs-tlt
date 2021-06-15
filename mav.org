@@ -24,6 +24,7 @@
 - [[#unclassified-packages][Unclassified Packages]]
   - [[#temporary-theme][Temporary theme]]
 - [[#future-work][Future Work]]
+  - [[#other-peoples-initel-files][Other People's .init.el files]]
 
 * Introduction
   This is my personal Emacs configuration.  This is not the first time
@@ -136,6 +137,22 @@ By the way, ~tlt~ is because this is *T* he  *L* ast  *T* ime I start from
 scratch.
 
 * General
+
+  This is for native compilation. Should probably go in
+  ~early-init.org~ once we have it. After I figure out what eactually
+  goes inside ~early-init.el~, maybe it is strictly for before-gui
+  things.
+  
+#+begin_src emacs-lisp
+  (if (and (fboundp 'native-comp-available-p)
+	   (native-comp-available-p))
+      (progn
+	(message "Native compilation is available")
+	(setq comp-deferred-compilation t)
+	(setq package-native-compile t)
+	(setq comp-async-report-warnings-errors nil))
+    (message "Native complation is *not* available"))
+#+end_src
 
 Let's start with general configurations that don't require any
 package.
@@ -515,6 +532,16 @@ configuration. Soon we'll be "self-hosting" :-)
 * Future Work
 This section list things that captured my interest. The plan is to
 look deeper in what these packages offer.
+
+** Other People's .init.el files
+   ;; Great init.el files
+    ; https://github.com/hrs/dotfiles/blob/master/emacs/.emacs.d/configuration.org
+    ; http://pages.sachachua.com/.emacs.d/Sacha.html
+    ; https://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html
+    ; https://github.com/gopar/.emacs.d/blob/master/init.el
+    ; https://github.com/aaronbieber/dotfiles/tree/master/configs/emacs.d
+    ; https://github.com/hrs/dotfiles/blob/master/emacs.d/configuration.org
+    ; https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-evil.el
 
 - activity-watch-mode
 - disaster. I actually did something similar that worked on a
