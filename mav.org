@@ -501,7 +501,7 @@ enough to remember the relative keybinding.
   (show-paren-mode t)
   :bind (("M-[" . paredit-wrap-square)
          ("M-{" . paredit-wrap-curly))
-  :diminish nil)
+  :delight nil)
 #+end_src
 * Software Development
 ** Version Control
@@ -527,7 +527,9 @@ for it.
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package git-gutter+ :config (global-git-gutter+-mode))
+  (use-package git-gutter+
+    :config (global-git-gutter+-mode)
+    :delight)
 
   (use-package git-gutter-fringe+ :after git-gutter+)
 #+end_src
