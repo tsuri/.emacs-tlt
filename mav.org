@@ -148,14 +148,17 @@ scratch.
   things.
   
 #+begin_src emacs-lisp
-  (if (and (fboundp 'native-comp-available-p)
-	   (native-comp-available-p))
-      (progn
-	(message "Native compilation is available")
-	(setq comp-deferred-compilation t)
-	(setq package-native-compile t)
-	(setq comp-async-report-warnings-errors nil))
-    (message "Native complation is *not* available"))
+    (if (and (fboundp 'native-comp-available-p)
+             (native-comp-available-p))
+        (progn
+          (message "Native compilation is available")
+          (setq comp-deferred-compilation t)
+          (setq package-native-compile t)
+          (setq native-comp-async-query-on-exit t)
+          (setq native-comp-async-jobs-number 0) ; use half of the cores
+          (setq native-comp-async-report-warnings-errors nil)
+          (setq comp-async-report-warnings-errors nil))
+      (message "Native complation is *not* available"))
 #+end_src
 
 Let's start with general configurations that don't require any
@@ -391,7 +394,8 @@ And remember the ~describe-personal-keybindings~ that comes with ~use-package~.
                  (setq emojify-display-style 'image)
                (setq emojify-display-style 'unicode)
                )
-               (setq emojify-emoji-set "emojione-v2.2.6")
+;               (setq emojify-emoji-set "emojione-v2.2.6")
+               (setq emojify-emoji-set "openmoji-v13-0")
     :init (global-emojify-mode 1))
 #+end_src
 *** Theme Management
