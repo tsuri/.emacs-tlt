@@ -394,8 +394,8 @@ And remember the ~describe-personal-keybindings~ that comes with ~use-package~.
                  (setq emojify-display-style 'image)
                (setq emojify-display-style 'unicode)
                )
-;               (setq emojify-emoji-set "emojione-v2.2.6")
-               (setq emojify-emoji-set "openmoji-v13-0")
+               (setq emojify-emoji-set "emojione-v2.2.6")
+;               (setq emojify-emoji-set "openmoji-v13-0")
     :init (global-emojify-mode 1))
 #+end_src
 *** Theme Management
