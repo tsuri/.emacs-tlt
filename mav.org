@@ -13,6 +13,7 @@
   - [[#package-management---act-i][Package management - Act I]]
   - [[#save-areas][Save Areas]]
   - [[#secrets][Secrets]]
+  - [[#misc][Misc]]
 - [[#keybindings][Keybindings]]
   - [[#memory-aids][Memory Aids]]
   - [[#global-keybindings][Global Keybindings]]
@@ -282,16 +283,17 @@ Note: as far as I know, all emacswiki packages have been reoved from
 ELPA and thus ~paradox-hide-wiki-packages~ might not be useful.
 
 #+BEGIN_SRC emacs-lisp
-(use-package paradox
-  :config
-  (setq-default
-   paradox-column-width-package 27
-   paradox-column-width-version 13
-   paradox-execute-asynchronously t
-   paradox-github-token (cadr (auth-source-user-and-password "api.github.com" "tsuri^paradox"))
-   paradox-hide-wiki-packages t)
-  (remove-hook 'paradox-after-execute-functions #'paradox--report-buffer-print)
-  (paradox-enable))
+  (use-package paradox
+    :after async
+    :config
+    (setq-default
+     paradox-column-width-package 27
+     paradox-column-width-version 13
+     paradox-execute-asynchronously t
+     paradox-github-token (cadr (auth-source-user-and-password "api.github.com" "tsuri^paradox"))
+     paradox-hide-wiki-packages t)
+    (remove-hook 'paradox-after-execute-functions #'paradox--report-buffer-print)
+    (paradox-enable))
 #+END_SRC
 
 I don't remember to upgrade packages ever. Fully automatic is a bit
@@ -347,6 +349,12 @@ so that the same places can be used by other packages no-litter knows nothing ab
     :config
     (epa-file-enable))
 #+END_SRC
+
+** Misc
+
+#+begin_src emacs-lisp
+(use-package async)
+#+end_src
 
 * Keybindings
 
@@ -436,17 +444,18 @@ probably ~custom-safe-themes~.
 *** Themes
 
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes)
+    (use-package doom-themes
+      :init (load-theme 'doom-tomorrow-night t))
 
-; here select-themes as-is is not nice as it would ask permission (e.g. no way to trust lisp code
-; with the ~t~ argument. TODO write our own version.
-  ;  (load-theme 'doom-one-light t)
-;    (load-theme 'doom-one t)
-  ;(load-theme 'doom-vibrant)
-;  (load-theme 'doom-acario-light t)
-  ;(load-theme 'doom-acario-dark)
-  ;(load-theme 'doom-tomorrow-day)
-  ;(load-theme 'ample-light t)
+  ; here select-themes as-is is not nice as it would ask permission (e.g. no way to trust lisp code
+  ; with the ~t~ argument. TODO write our own version.
+    ;  (load-theme 'doom-one-light t)
+  ;    (load-theme 'doom-one t)
+    ;(load-theme 'doom-vibrant)
+  ;  (load-theme 'doom-acario-light t)
+    ;(load-theme 'doom-acario-dark)
+    ;(load-theme 'doom-tomorrow-day)
+    ;(load-theme 'ample-light t)
 
 #+END_SRC
 ** Modeline
