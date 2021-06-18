@@ -20,9 +20,11 @@
 - [[#appearance][Appearance]]
   - [[#themes][Themes]]
   - [[#modeline][Modeline]]
+  - [[#icons][Icons]]
 - [[#movement][Movement]]
 - [[#undo][Undo]]
 - [[#emacs-debugging][Emacs debugging]]
+- [[#file-management][File Management]]
 - [[#software-development][Software Development]]
   - [[#version-control][Version Control]]
 - [[#unclassified-packages][Unclassified Packages]]
@@ -441,6 +443,17 @@ probably ~custom-safe-themes~.
       (load-theme (intern-soft theme) t)))
 #+END_SRC
 
+TODO: modify things so that when a new theme is selected here,
+~${HOME}/.Xdefaults~ is updated. The following is ok for doom-tomorrow-night:
+
+#+begin_src sh
+  cat ~/.Xdefaults 
+  Emacs*Background: #1d1f21
+  Emacs*Foreground: #c5c8c6
+
+xrdb -merge ~/.Xdefaults                                   
+
+#+end_src
 *** Themes
 
 #+BEGIN_SRC emacs-lisp
@@ -466,6 +479,12 @@ probably ~custom-safe-themes~.
   :init (doom-modeline-mode 1))
 #+END_SRC
 
+** Icons
+
+Remember to run ~all-the-icons-install-fonts~
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+#+end_src
 * Movement
 
 When more than two windows are displayed and you press ~C-x o~  (normally bound to ~other-window~)
@@ -553,6 +572,23 @@ enough to remember the relative keybinding.
          ("M-{" . paredit-wrap-curly))
   :delight nil)
 #+end_src
+
+* File Management
+
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    :custom
+    (dired-listing-switches "-aBhl --group-directories-first"))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package all-the-icons-dired
+  :after all-the-icons
+  :hook (dired-mode-hook . 'all-the-icons-dired-mode)
+  )
+#+end_src
+
 * Software Development
 ** Version Control
 
