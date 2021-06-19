@@ -30,19 +30,20 @@
 (package-initialize)
 (package-refresh-contents)
 
-;;; org is a builtin package, hence `package-install` wouldn't
-;;; install it. We advise package-installed-p to answer false
-;;; for builtin packages. This is probably too much, but for now it does work.
 (defun package-from-archive (f &rest args)
   (message (symbol-name (car args)))
   (if (car args) 'org
     (apply f rgs)
     (and (apply f args)
 	 (assq (car args) package-alist))))
-(advice-add 'package-installed-p :around 'package-from-archive)
 
+;;; org is a builtin package, hence `package-install` wouldn't
+;;; install it. We advise package-installed-p to answer false
+;;; for builtin packages.
+(advice-add 'package-installed-p :around #'package-from-archive)
 (package-install 'org)
 (require 'org)
+(advice-remove 'pckage-installed-p #'package-from-archive)
 
 (let ((mav-org
        (concat (file-name-as-directory user-emacs-directory) "mav.org")))
