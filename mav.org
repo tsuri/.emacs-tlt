@@ -10,7 +10,7 @@
 - [[#general][General]]
   - [[#garbage-collection][Garbage Collection]]
   - [[#no-training-wheels][No training wheels]]
-  - [[#package-management---act-i][Package management - Act I]]
+  - [[#package-management][Package management]]
   - [[#save-areas][Save Areas]]
   - [[#secrets][Secrets]]
   - [[#misc][Misc]]
@@ -27,8 +27,9 @@
 - [[#file-management][File Management]]
 - [[#software-development][Software Development]]
   - [[#version-control][Version Control]]
+- [[#applications][Applications]]
+  - [[#shell][Shell]]
 - [[#unclassified-packages][Unclassified Packages]]
-  - [[#temporary-theme][Temporary theme]]
 - [[#future-work][Future Work]]
   - [[#other-peoples-initel-files][Other People's .init.el files]]
   - [[#sites][Sites]]
@@ -194,7 +195,7 @@ annoying.
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-I like to have my Emacs take all screen. I'll proabably revisit this
+I like to have my Emacs take all screen. I'll probably revisit this
 when I'll use wide or ultrawide screens.
 
 #+BEGIN_SRC emacs-lisp
@@ -205,7 +206,7 @@ A bit more space in the fringe:
 #+begin_src emacs-lisp
 (set-fringe-mode 10)
 #+end_src
-** Package management - Act I
+** Package management
 Here we set up the bare minimum for installing a few packages we need
 before ~use-package~ is available.
 
@@ -266,6 +267,7 @@ warning disabled (maybe I should explicitely re-enable them)
 In theory, this package is deprecated and the functionality built-in
 into ~use-package~. In practice, without it I cannot get the ~:chords~
 keyword to work.
+
 #+begin_src emacs-lisp
   (use-package use-package-chords
     :config (key-chord-mode 1))
@@ -373,7 +375,7 @@ cofiguration.
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :init (which-key-mode)
-  :diminish which-key-mode
+  :delight which-key-mode
   :config
   (setq which-key-idle-delay 0.3))
 #+END_SRC
@@ -581,7 +583,7 @@ enough to remember the relative keybinding.
   (show-paren-mode t)
   :bind (("M-[" . paredit-wrap-square)
          ("M-{" . paredit-wrap-curly))
-  :delight nil)
+  :delight)
 #+end_src
 
 * File Management
@@ -606,12 +608,7 @@ enough to remember the relative keybinding.
   (use-package dired-du
     :after dired
     :config
-    ;; human readable size format
     (setq dired-du-size-format t))
-
-  (use-package dired-async  ; Part of async
-    :after (async dired)
-    :config (dired-async-mode 1))
 #+end_src
 * Software Development
 ** Version Control
