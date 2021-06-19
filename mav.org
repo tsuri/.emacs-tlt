@@ -643,27 +643,40 @@ for it.
 
   (use-package git-gutter-fringe+ :after git-gutter+)
 #+end_src
+
+* Applications
+
+** Shell
+
+#+BEGIN_SRC emacs-lisp
+    (use-package vterm
+      :ensure-system-package cmake
+      :ensure-system-package libtool-bin
+      :custom
+      (vterm-max-scrollback 10000)
+      (vterm-shell "zsh")
+      :config
+      (defun turn-off-chrome ()
+        (hl-line-mode -1)
+        (display-line-numbers-mode -1))
+      :hook (vterm-mode . turn-off-chrome))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm-toggle
+    :custom
+    (vterm-toggle-fullscreen-p t)
+    (vterm-toggle-scope 'project)
+    :bind (("s-t" . #'vterm-toggle)
+           :map vterm-mode-map
+           ("s-t" . #'vterm-toggle)))
+#+END_SRC
+
 * Unclassified Packages
 Here we have packages that I have installed and I'm probably playing
 with. They need to be moved over time to the appropriate section in
 the main part of this configuration file.
 
-** Temporary theme
-I just need something dark to visually distinguish the Emacs I'm using
-for editing and the Emacs that I use for testing this
-configuration. Soon we'll be "self-hosting" :-) 
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package solaire-mode
-    :config
-    (add-to-list 'solaire-mode-themes-to-face-swap '"vscode-dark-plus")
-    (setq solaire-mode-auto-swap-bg nil)
-    (solaire-global-mode +1))
-
-  (use-package vscode-dark-plus-theme
-    :after solaire-mode
-    :config
-    (load-theme 'vscode-dark-plus t))
-#+END_SRC
 
 * Future Work
 This section list things that captured my interest. The plan is to
