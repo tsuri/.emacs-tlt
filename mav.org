@@ -31,6 +31,7 @@
   - [[#shell][Shell]]
 - [[#org-mode][Org Mode]]
   - [[#beautification][Beautification]]
+  - [[#additionl-org-mode-functionality][Additionl Org Mode functionality]]
 - [[#unclassified-packages][Unclassified Packages]]
 - [[#future-work][Future Work]]
   - [[#other-peoples-initel-files][Other People's .init.el files]]
@@ -715,6 +716,24 @@ for it.
   )
 #+END_SRC
 
+** Additionl Org Mode functionality
+
+*** Jira
+
+I use Jira at work. I should really:
+- configure this package only on work machines, elsewhere it is
+  useless
+- put the host and url in ~~/.authinfo.gpg~ (where user and password are
+  kept). These URLs are not sensitive, but is cooler to have them
+  encrypted and accessed through `work-jira`.
+  
+#+begin_src emacs-lisp
+  (use-package org-jira
+  :custom
+  (jiralib-host "jira.int.aurora.tech")
+  (jiralib-url "https://jira.int.aurora.tech")
+  )
+#+end_src
 
 * Unclassified Packages
 Here we have packages that I have installed and I'm probably playing
