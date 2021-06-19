@@ -243,7 +243,7 @@ disable warnings of this nature when loading
 ~auto-package-update~. Unfortunately everything after it has those
 warning disabled (maybe I should explicitely re-enable them)
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (setq package-user-dir (mav/litter-directory "packages" emacs-version))
   (setq package-archives
         '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -700,8 +700,6 @@ for it.
     :custom
     (org-hide-emphasis-markers t)
     )
-
-
 #+end_src
 
 ** Beautification
@@ -767,7 +765,7 @@ the main part of this configuration file.
         ("https://www.reddit.com/r/googlecloud.rss" googlecloud)
         ("https://www.reddit.com/r/devops.rss" devops)
         ("https://www.reddit.com/r/kubernetes.rss" kubernetes)
-        ))
+        )))
 #+end_src
 
 #+begin_src emacs-lisp
