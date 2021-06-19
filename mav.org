@@ -29,6 +29,8 @@
   - [[#version-control][Version Control]]
 - [[#applications][Applications]]
   - [[#shell][Shell]]
+- [[#org-mode][Org Mode]]
+  - [[#beautification][Beautification]]
 - [[#unclassified-packages][Unclassified Packages]]
 - [[#future-work][Future Work]]
   - [[#other-peoples-initel-files][Other People's .init.el files]]
@@ -272,6 +274,20 @@ keyword to work.
   (use-package use-package-chords
     :config (key-chord-mode 1))
 #+end_src
+
+My understanding is that ensure-system-package has been folded into
+the ~use-package~ package.  It doesn't seem the case in my version.
+  - verify this
+
+#+BEGIN_SRC emacs-lisp
+  (use-package system-packages
+    :config
+    (setq system-packages-package-manager 'apt)
+    (setq system-packages-use-sudo t)
+    )
+
+  (use-package use-package-ensure-system-package)
+#+END_SRC
 
 The modeline becomes unwieldy when lot of minor modes try to say
 things there. We were using ~diminish~, but it seems that now
@@ -669,12 +685,75 @@ for it.
            ("s-t" . #'vterm-toggle)))
 #+END_SRC
 
+* Org Mode
+
+#+begin_src emacs-lisp
+    (defun mav/org-mode-setup ()
+      (org-indent-mode)
+      (auto-fill-mode 1)
+      (variable-pitch-mode 1)
+      (visual-line-mode 1))
+
+  (use-package org
+    :hook (org-mode . mav/org-mode-setup)
+    :custom
+    (org-hide-emphasis-markers t)
+    )
+
+
+#+end_src
+
+** Beautification
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-superstar
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+  ;  (setq org-superstar-headline-bullets-list '("☰" "☷" "☵" "☲"  "☳" "☴"  "☶"  "☱" ))
+    (setq org-superstar-headline-bullets-list '("◉" "◎" "⚫" "○" "►" "◇"))
+    (setq org-superstar-cycle-headline-bullets nil)
+  )
+#+END_SRC
+
+
 * Unclassified Packages
 Here we have packages that I have installed and I'm probably playing
 with. They need to be moved over time to the appropriate section in
 the main part of this configuration file.
 
+#+begin_src emacs-lisp
+  (use-package elfeed
+    :bind ("C-x f" . elfeed)
 
+    :config
+    (setq-default elfeed-search-filter "@2-days-ago +unread")
+    (setq-default elfeed-search-title-max-width 100)
+    (setq-default elfeed-search-title-min-width 100)
+    (setq elfeed-feeds
+      '(
+        ;; programming
+        ("https://news.ycombinator.com/rss" hacker)
+        ("https://www.heise.de/developer/rss/news-atom.xml" heise)
+        ("https://www.reddit.com/r/programming.rss" programming)
+        ("https://www.reddit.com/r/emacs.rss" emacs)
+
+        ;; programming languages
+        ("https://www.reddit.com/r/golang.rss" golang)
+        ("https://www.reddit.com/r/javascript.rss" javascript)
+        ("https://www.reddit.com/r/typescript.rss" typescript)
+        ("https://www.reddit.com/r/python.rss" python)
+
+        ;; cloud
+        ("https://www.reddit.com/r/aws.rss" aws)
+        ("https://www.reddit.com/r/googlecloud.rss" googlecloud)
+        ("https://www.reddit.com/r/devops.rss" devops)
+        ("https://www.reddit.com/r/kubernetes.rss" kubernetes)
+        ))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package elfeed-goodies :after elfeed)
+#+end_src
 * Future Work
 This section list things that captured my interest. The plan is to
 look deeper in what these packages offer.
@@ -709,6 +788,9 @@ Download jetbrains from https://www.jetbrains.com/lp/mono/
 
 Download
 https://downloads.sourceforge.net/project/dejavu/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fdejavu%2Ffiles%2Fdejavu%2F2.37%2Fdejavu-fonts-ttf-2.37.tar.bz2%2Fdownload&ts=1613947291
+
+https://edwardtufte.github.io/et-book/ nice font for org-mode,
+esecially journal
 
 ** Sites
 
