@@ -43,7 +43,7 @@
 (advice-add 'package-installed-p :around #'package-from-archive)
 (package-install 'org)
 (require 'org)
-(advice-remove 'pckage-installed-p #'package-from-archive)
+(advice-remove 'package-installed-p #'package-from-archive)
 
 (let ((mav-org
        (concat (file-name-as-directory user-emacs-directory) "mav.org")))
