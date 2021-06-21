@@ -1,10 +1,10 @@
 ;;; remove path to the builtin org mode
 (require 'cl-seq)
-(setq load-path
-      (cl-remove-if
-       (lambda (x)
-         (string-match-p "org$" x))
-       load-path))
+;; (setq load-path
+;;       (cl-remove-if
+;;        (lambda (x)
+;;          (string-match-p "org$" x))
+;;        load-path))
 
 (require 'subr-x) ; for string-remove-suffix
 (defun mav/litter-directory (leaf-dir &optional version)
@@ -40,10 +40,15 @@
 ;;; org is a builtin package, hence `package-install` wouldn't
 ;;; install it. We advise package-installed-p to answer false
 ;;; for builtin packages.
-(advice-add 'package-installed-p :around #'package-from-archive)
+;(advice-add 'package-installed-p :around #'package-from-archive)
 (package-install 'org)
 (require 'org)
-(advice-remove 'package-installed-p #'package-from-archive)
+;(advice-remove 'package-installed-p #'package-from-archive)
+
+;;; NOTE: maybe this is enough:
+;;; (assq-delete-all 'org package--builtins)
+;;; (assq-delete-all 'org package--builtin-versions)
+;;; instead of removing from loadpath + the advice above
 
 (let ((mav-org
        (concat (file-name-as-directory user-emacs-directory) "mav.org")))
