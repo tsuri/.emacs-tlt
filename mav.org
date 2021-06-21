@@ -21,6 +21,7 @@
   - [[#themes][Themes]]
   - [[#modeline][Modeline]]
   - [[#icons][Icons]]
+  - [[#eyecandies][Eyecandies]]
 - [[#movement][Movement]]
 - [[#undo][Undo]]
 - [[#emacs-debugging][Emacs debugging]]
@@ -29,6 +30,7 @@
   - [[#version-control][Version Control]]
 - [[#applications][Applications]]
   - [[#shell][Shell]]
+- [[#dashboard][Dashboard]]
 - [[#org-mode][Org Mode]]
   - [[#beautification][Beautification]]
   - [[#additionl-org-mode-functionality][Additionl Org Mode functionality]]
@@ -265,6 +267,7 @@ warning disabled (maybe I should explicitely re-enable them)
   (package-install 'use-package)
   (require 'use-package)
   (setq use-package-always-ensure t)
+  (setq use-package-compute-statistics t)
 #+end_src
 
 In theory, this package is deprecated and the functionality built-in
@@ -413,8 +416,51 @@ And remember the ~describe-personal-keybindings~ that comes with ~use-package~.
 * Appearance
 ** Themes
 *** Fonts
+
+(defcustom lc/default-font-family "fira code" 
+    "Default font family"
+    :type 'string
+    :group 'lc)
+
+  (defcustom lc/variable-pitch-font-family  "cantarell"
+    "Variable pitch font family"
+    :type 'string
+    :group 'lc)
+  
+  (defcustom lc/laptop-font-size 150
+    "Font size used for laptop"
+    :type 'int
+    :group 'lc)
+
+
+#+begin_src emacs-lisp :tangle no
+  (use-package emacs
+  :ensure nil
+  :init
+  (defun mav/get-font-size ()
+      "font size is calculated according to the size of the primary screen"
+      (let* (;; (command "xrandr | awk '/primary/{print sqrt( ($(nf-2)/10)^2 + ($nf/10)^2 )/2.54}'")
+             (command "osascript -e 'tell application \"finder\" to get bounds of window of desktop' | cut -d',' -f3")
+             (screen-width (string-to-number (shell-command-to-string command))))  ;;<
+        (if (> screen-width 2560) lc/laptop-font-size lc/laptop-font-size))) 
+
+    ;; Main typeface
+    (set-face-attribute 'default nil :font lc/default-font-family :height (mav/get-font-size))
+    ;; Set the fixed pitch face
+    (set-face-attribute 'fixed-pitch nil :font lc/default-font-family :height (mav/get-font-size))
+    ;; Set the variable pitch face
+    (set-face-attribute 'variable-pitch nil :font lc/variable-pitch-font-family :height (mav/get-font-size) :weight 'regular)
+    )
+#+end_src
+
+Playing with fonts.
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil :font "JetBrainsMono 12")
+  ;  (set-face-attribute 'default nil :font "EtBembo" :height 120)
+
+    (set-face-attribute 'default nil :font "JetBrainsMono" :height 120)
+    (set-face-attribute 'fixed-pitch nil :font "JetBrainsMono" :height 110)
+;    (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
+    (set-face-attribute 'variable-pitch nil :font "EtBembo" :height 160 :weight 'regular)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -515,6 +561,32 @@ Remember to run ~all-the-icons-install-fonts~
 ; should we use the after-init hook?
   (use-package all-the-icons :config (mav/maybe-install-fonts))
 #+end_src
+
+** Eyecandies
+
+#+begin_src emacs-lisp
+(use-package hl-todo
+  :hook ((prog-mode) . lc/hl-todo-init)
+  :init
+  (defun lc/hl-todo-init ()
+    (setq-local hl-todo-keyword-faces '(("HOLD" . "#cfdf30")
+                                        ("TODO" . "#ff9977")
+                                        ("NEXT" . "#b6a0ff")
+                                        ("PROG" . "#00d3d0")
+                                        ("FIXME" . "#ff9977")
+                                        ("DONE" . "#44bc44")
+                                        ("REVIEW" . "#6ae4b9")
+                                        ("DEPRECATED" . "#bfd9ff")))
+    (hl-todo-mode))
+  )
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :config
+    (rainbow-mode))  
+#+end_src
+
 * Movement
 
 When more than two windows are displayed and you press ~C-x o~  (normally bound to ~other-window~)
@@ -686,19 +758,124 @@ for it.
            ("s-t" . #'vterm-toggle)))
 #+END_SRC
 
+* Dashboard
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package uptimes
+    :config
+    (setq uptimes-database (concat (mav/litter-directory "uptimes") "uptimes.el")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fortune
+:ensure-system-package fortune
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard-hackernews)
+#+END_SRC
+
+
+#+begin_src emacs-lisp
+    (use-package dashboard
+      :preface
+      (defun my/dashboard-banner ()
+        "Set a dashboard banner including information on package initialization
+      time and garbage collections."
+        (setq dashboard-banner-logo-title
+              (format "Emacs ready in %.2f seconds with %d garbage collections."
+                      (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+      :config
+      (setq dashboard-startup-banner 'logo)
+      (setq dashboard-startup-banner "~/.emacs-tlt/assets/hacker.png")
+      (dashboard-setup-startup-hook)
+      :hook ((after-init     . dashboard-refresh-buffer)
+             (dashboard-mode . my/dashboard-banner)))
+
+  (setq initial-buffer-choice #'(lambda () (get-buffer-create "*dashboard*")))
+#+END_SRC
+
+
 * Org Mode
 
 #+begin_src emacs-lisp
     (defun mav/org-mode-setup ()
-      (org-indent-mode)
+      (org-indent-mode) ; needed given the org-startup-indented t below?
       (auto-fill-mode 1)
       (variable-pitch-mode 1)
-      (visual-line-mode 1))
+      (visual-line-mode 1)
+
+    (setq org-startup-indented t
+      org-src-tab-acts-natively t)
+
+    (set-face-attribute 'org-block-begin-line nil :font "Zen Dots" :height 110 :inverse-video t :extend t)
+    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+    (font-lock-add-keywords 'org-mode
+                              '(("^ *\\([-]\\) "
+                                 (0 (prog1 ()
+                                      (compose-region
+                                       (match-beginning 1)
+                                       (match-end 1) "•"))))))
+
+      (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
+                                             ("#+END_SRC" . "†")
+                                             ("#+begin_src" . "†")
+                                             ("#+end_src" . "†")
+                                             ("#+BEGIN_EXAMPLE" . (?ℰ (Br . Bl) ?⇒)) ;; ℰ⇒
+                                             ("#+END_EXAMPLE"    . ?⇐)               ;; ⇐
+                                             ("#+begin_example" . (?ℰ (Br . Bl) ?⇒)) ;; ℰ⇒
+                                             ("#+end_example"    . ?⇐)               ;; ⇐
+                                             ("#+BEGIN_QUOTE" . (?𝒬 (Br . Bl) ?⇒))   ;; 𝒬⇒
+                                             ("#+END_QUOTE"    . ?⇐)                 ;; ⇐
+                                             ("#+begin_quote" . (?𝒬 (Br . Bl) ?⇒))   ;; 𝒬⇒
+                                             ("#+end_quote"    . ?⇐)                 ;; ⇐
+                                             ("[ ]" .  "☐") 
+                                             ("[X]" . "☑" ) 
+                                             ("[-]" . "❍" ) 
+                                             ("<=" . ?≤)
+                                             (">=" . "≥")
+                                             ("=>" . "⇨")))
+      (setq prettify-symbols-unprettify-at-point 'right-edge)
+      ; TODO there's a better way to enable this
+      (add-hook 'org-mode-hook 'prettify-symbols-mode)
+
+    (let* ((variable-tuple
+          (cond ((x-list-fonts "Advent Pro")         '(:font "Advent Pro"))
+              ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color     (face-foreground 'default nil 'default))
+         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+
+    (custom-theme-set-faces
+     'user
+     `(org-level-8 ((t (,@headline ,@variable-tuple))))
+     `(org-level-7 ((t (,@headline ,@variable-tuple))))
+     `(org-level-6 ((t (,@headline ,@variable-tuple))))
+     `(org-level-5 ((t (,@headline ,@variable-tuple))))
+     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))))
 
   (use-package org
     :hook (org-mode . mav/org-mode-setup)
     :custom
     (org-hide-emphasis-markers t)
+    :config
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
     )
 #+end_src
 
@@ -709,11 +886,28 @@ for it.
     :config
     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
   ;  (setq org-superstar-headline-bullets-list '("☰" "☷" "☵" "☲"  "☳" "☴"  "☶"  "☱" ))
-    (setq org-superstar-headline-bullets-list '("◉" "◎" "⚫" "○" "►" "◇"))
+(setq org-superstar-headline-bullets-list '("◉" "◎" "⚫" "○" "►" "◇"))
     (setq org-superstar-cycle-headline-bullets nil)
+;  (setq org-superstar-headline-bullets-list '("✖" "✚" "◉" "○" "▶"))
+  (setq org-superstar-cycle-headline-bullets nil)
+  (setq org-ellipsis " ↴ ")
   )
 #+END_SRC
 
+#+begin_src emacs-lisp
+(use-package org-pretty-tags
+  :demand t
+  :config
+   (setq org-pretty-tags-surrogate-strings
+         (quote
+          (("TOPIC" . "☆")
+           ("PROJEKT" . "💡")
+           ("SERVICE" . "✍")
+           ("Blog" . "✍")
+           ("music" . "♬")
+           ("security" . "🔥"))))
+   (org-pretty-tags-global-mode))
+#+end_src
 ** Additionl Org Mode functionality
 
 *** Jira
@@ -724,13 +918,21 @@ I use Jira at work. I should really:
 - put the host and url in ~~/.authinfo.gpg~ (where user and password are
   kept). These URLs are not sensitive, but is cooler to have them
   encrypted and accessed through `work-jira`.
+
+  Note: for debugging jira connection (and anything that relies on
+  ~request.el~ , really, you may find the following setting useful:
+  #+begin_src emacs-lisp :tangle no
+    (setq request-log-level 'debug)
+    (setq request-message-level 'debug)
+  #+end_src
   
 #+begin_src emacs-lisp
-  (use-package org-jira
-  :custom
-  (jiralib-host "jira.int.aurora.tech")
-  (jiralib-url "https://jira.int.aurora.tech")
-  )
+    ;; (use-package org-jira
+    ;; :custom
+    ;; (jiralib-host "jira.int.aurora.tech")
+    ;; (jiralib-url "https://jira.int.aurora.tech")
+    ;; )
+  (use-package org-jira)
 #+end_src
 
 * Unclassified Packages
