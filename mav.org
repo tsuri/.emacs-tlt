@@ -174,9 +174,24 @@ Let's start with general configurations that don't require any
 package.
 ** Garbage Collection
 
+In ~early_init.el~ we have increased the limits for garbage collection
+to speedup package loading. Here we arrange to go back to a sane limit
+at the end of Emacs startup. If you see freezing, decrease this value
+so that GC is run more frequently.
 #+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold 50000000)
-  (setq large-file-warning-threshold 100000000)
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold 20000000)
+              (setq large-file-warning-threshold 100000000)
+
+              (defun mav/minibuffer-setup-hook ()
+              (setq gc-cons-threshold 50000000))
+
+            (defun mav/minibuffer-exit-hook ()
+              (setq gc-cons-threshold 20000000))
+
+            (add-hook 'minibuffer-setup-hook #'mav/minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'mav/minibuffer-exit-hook)))
 #+END_SRC
 
 ** No training wheels
@@ -332,6 +347,7 @@ to commit after an upgrade)
     :init (setq warning-suppress-log-types '((package reinitialization)))
     :config
      (setq auto-package-update-delete-old-versions t
+           auto-package-update-hide-results t
            auto-package-update-interval 10
            auto-package-update-prompt-before-update t))
 #+end_src
@@ -380,6 +396,8 @@ so that the same places can be used by other packages no-litter knows nothing ab
 (use-package async)
 #+end_src
 
+#+begin_src emacs-lisp
+#+end_src
 * Keybindings
 
 ** Memory Aids
@@ -675,6 +693,11 @@ enough to remember the relative keybinding.
   :delight)
 #+end_src
 
+Bug Hunter bisects elisp files for you. You can thank me later :smile:
+
+#+begin_src emacs-lisp
+(use-package bug-hunter)
+#+end_src
 * File Management
 
 #+begin_src emacs-lisp
@@ -779,6 +802,7 @@ for it.
 
 #+begin_src emacs-lisp
     (use-package dashboard
+      :delight (dashboard-mode page-break-lines-mode)
       :preface
       (defun my/dashboard-banner ()
         "Set a dashboard banner including information on package initialization
@@ -787,13 +811,15 @@ for it.
               (format "Emacs ready in %.2f seconds with %d garbage collections."
                       (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
       :config
-      (setq dashboard-startup-banner 'logo)
+      (setq dashboard-banner-logo-title "W   E      A   R   E      L   E   G   I   O   N   S")
+      (set-face-attribute 'dashboard-banner-logo-title nil :font "Orbitron" :height 200 :weight 'bold :foreground "#196DB5")
+      (setq dashboard-startup-banner 'logo) ; TODO use this only when png image not available
       (setq dashboard-startup-banner "~/.emacs-tlt/assets/hacker.png")
       (dashboard-setup-startup-hook)
       :hook ((after-init     . dashboard-refresh-buffer)
-             (dashboard-mode . my/dashboard-banner)))
-
-  (setq initial-buffer-choice #'(lambda () (get-buffer-create "*dashboard*")))
+             (dashboard-mode . my/dashboard-banner))
+    :custom
+  (initial-buffer-choice #'(lambda () (message "HERE")(get-buffer-create "*dashboard*"))))
 #+END_SRC
 
 
@@ -879,6 +905,14 @@ for it.
     )
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package org-tempo
+  :ensure nil				; part of org
+    :after org
+  :config
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    )
+#+end_src
 ** Beautification
 
 #+BEGIN_SRC emacs-lisp

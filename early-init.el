@@ -1,3 +1,8 @@
+;;; -*- lexical-binding: t -*-
+
+;;; speadup startup by leaving garbage around
+(setq gc-cons-threshold most-positive-fixnum)
+
 (setq package-enable-at-startup nil)
 (setq package-archives nil)
 
